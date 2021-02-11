@@ -1,46 +1,96 @@
 #include<iostream>
 #include<algorithm>
+#include<vector>
 #include<string>
+#include<stdio.h>
+#include<deque>
+#include<map>
+#include<queue>
+#include<cmath>
+
+typedef long long ll;
+
+#define debug(x) cout << #x << '=' << x << endl;
+#define debug_arr(a, n) for(ll i = 0; i < n; i++)cout << a[i] << ' '
+#define inf 100000000000
+#define loop(i,n) for(ll i = 0; i < n; i++)
+#define graph vector<vector<ll>>
+#define P pair<ll,ll>
 
 using namespace std;
 
+int l[2000][2000],r[2000][2000],a[2000][2000],u[2000][2000];
+bool isWall[2000][2000];
+
 int main(){
-    int H,W,a[2000][2000],max=0,score;
-    cin >>H >>W;
-    string S[2000];
-    for(int i = 0;i<H;i++){
-        cin >> S[i];
-        for(int k =0;k<W;k++){
-            if(S[i][k] == '.'){
-                a[i][k] = 1;
+    int h,w;
+    char tmp;
+
+    cin >> h >> w;
+
+    scanf("%c",&tmp);
+    loop(i,h){
+        loop(j,w){
+            scanf("%c",&tmp);
+            if(tmp == '.'){
+                isWall[i][j] = false;
+            }else{
+                isWall[i][j] = true;
+            }
+        }
+        scanf("%c",&tmp);
+    }
+
+    loop(i,h){
+        loop(j,w){
+            if(isWall[i][j]){
+                l[i][j] = 0;
+                a[i][j] = 0;
             }
             else{
-                a[i][k] = 0;
+                if(j != 0){
+                    l[i][j] = l[i][j-1] + 1;
+                }else{
+                    l[i][0] = 1;
+                }
+                if(i != 0){
+                    a[i][j] = a[i-1][j] + 1;
+                }else{
+                    a[0][j] = 1;
+                }
             }
         }
     }
-    for(int i = 0;i<H;i++){
-        for(int k=0;k<W;k++){
-            score = 0;
-            if(a[i][k] == 0)continue;
-            for(int migi = 1;migi < W-k;migi++){
-                if(a[i][k+migi] == 0)break;
-                score++ ;
+
+    for(int i = h-1; i >= 0; i--){
+        for(int j = w-1; j >= 0; j--){
+            if(isWall[i][j]){
+                r[i][j] = 0;
+                u[i][j] = 0;
             }
-            for(int hidari = 1;hidari <= k;hidari++){
-                if(a[i][k-hidari] == 0)break;
-                score++ ;
+            else{
+                if(j != w-1){
+                    r[i][j] = r[i][j+1] + 1;
+                }else{
+                    r[i][w-1] = 1;
+                }
+                if(i != h-1){
+                    u[i][j] = u[i+1][j] + 1;
+                }else{
+                    u[i][j] = 1;
+                }
             }
-            for(int ue = 1;ue <= i;ue++){
-                if(a[i-ue][k] == 0)break;
-                score++ ;
-            }
-            for(int shita = 1;shita < H-i;shita++){
-                if(a[i+shita][k] == 0)break;
-                score++ ;
-            }
-            if(score>max)max=score;
         }
     }
-    cout << max << endl; 
+
+    int result = 0, score;
+    loop(i,h){
+        loop(j,w){
+            score = l[i][j] + r[i][j] + a[i][j] + u[i][j];
+            result = max(score, result);
+        }
+    }
+
+    cout << result - 3 << endl;
+    return 0;
 }

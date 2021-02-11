@@ -20,24 +20,28 @@ typedef long long ll;
 using namespace std;
 
 int main(){
-    double a,b,x;
-    cin >>a >>b >>x;
+    ll n,m,result = 0;
+    cin >>n >>m;
 
-    double d = double(x) / a, result;
-
-    if(d * 2 < a * b){
-        double c = d * 2.0 / b;
-        result = atan2(b , c);
-    }else{
-        d = (a * b) - d;
-        double c = d * 2.0 / a;
-        result = atan2(c , a);
+    vector<ll> a(n);
+    priority_queue<ll> q;
+    
+    loop(i,n) {
+        cin >>a[i];
+        q.push(a[i]);
     }
 
-    double pi = acos(-1);
-    result = result / (2.0 * pi) * 360;
+    loop(i,m){
+        ll tmp = q.top();
+        q.pop();
+        tmp /= 2;
+        q.push(tmp);
+    }
 
-    printf("%.10f",result);
+    loop(i,n){
+        result += q.top();
+        q.pop();
+    }
 
-    return 0;
+    cout << result << endl;
 }
