@@ -22,7 +22,11 @@
 			"#define graph vector<vector<ll>>",
 			"#define P pair<ll,ll>",
 			"",
-			"using namespace std;"
+			"using namespace std;",
+			"",
+			"int main(){",
+			"",
+			"}"
         ],
     "description": "template of atCoder"//表示される説明文
     }
