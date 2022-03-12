@@ -25,3 +25,61 @@ typedef long long ll;
 
 using namespace std;
 
+class SegmentTree
+{
+private:
+    ll num_end_leaves;
+    ll tree_depth;
+    vector<ll> vec;
+
+public:
+    SegmentTree(ll n)
+    {
+        num_end_leaves = 1;
+        tree_depth = 0;
+        while (num_end_leaves < n)
+        {
+            num_end_leaves *= 2;
+            tree_depth++;
+        }
+        vec.resize(num_end_leaves * 2, 0);
+    }
+
+    ll get(ll q_left, ll q_right, ll depth = 0, ll leaf_id_in_layer = 0)
+    {
+        ll range_leaf = pow(2, tree_depth - depth);
+        ll range_left = range_leaf * leaf_id_in_layer;
+        ll range_right = range_left + range_leaf - 1;
+        bool is_same_left = (q_left == range_left);
+        bool is_same_right = (q_right == range_right);
+        if (is_same_left && is_same_right)
+        {
+            return vec[pow(2, depth) + leaf_id_in_layer];
+        }
+
+        bool use_left_leaf = q_left <= (range_left + range_leaf / 2 - 1);
+        bool use_right_leaf = q_right >= (range_left + range_leaf / 2);
+        ll ans = 0;
+        if (use_left_leaf)
+        {
+            ans += get(q_left, min(range_left + range_leaf / 2 - 1, range_right), depth + 1, leaf_id_in_layer * 2);
+        }
+        if (use_right_leaf)
+        {
+            ans += get(max(range_left + range_leaf / 2, q_left), q_right, depth + 1, leaf_id_in_layer * 2 + 1);
+        }
+
+        return ans;
+    }
+
+    void add(ll id)
+    {
+        ll array_id = id + num_end_leaves;
+        vec[array_id]++;
+        while (array_id > 0)
+        {
+            array_id /= 2;
+            vec[array_id] = vec[array_id * 2] + vec[array_id * 2 + 1];
+        }
+    }
+};

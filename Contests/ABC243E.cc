@@ -38,7 +38,7 @@ struct Edge
     }
 };
 
-ll dist[300][300] = {inf};
+ll dist[300][300];
 
 int main()
 {
@@ -46,6 +46,14 @@ int main()
     cin >> n >> m;
 
     vector<Edge> edge_vec;
+
+    loop(i, n)
+    {
+        loop(j, n)
+        {
+            dist[i][j] = inf;
+        }
+    }
 
     loop(i, m)
     {
@@ -58,11 +66,11 @@ int main()
         dist[b][a] = c;
     }
 
-    loop(i, n)
+    loop(k, n)
     {
-        loop(j, n)
+        loop(i, n)
         {
-            loop(k, n)
+            loop(j, n)
             {
                 dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
             }
@@ -74,7 +82,6 @@ int main()
         bool tmp_ans = false;
         loop(j,n){
             Edge tmp_e = edge_vec[i];
-            if(j == tmp_e.from || j == tmp_e.to) continue;
             if(tmp_e.weight >= dist[tmp_e.from][j] + dist[j][tmp_e.to]){
                 tmp_ans |= true;
             }
