@@ -43,3 +43,42 @@ void binom_init()
         finv[i] = finv[i - 1] * inv[i] % MOD;
     }
 }
+
+int main()
+{
+    binom_init();
+
+    string s;
+    cin >> s;
+
+    vector<ll> alphabet_num(27, 0);
+
+    loop(i, ll(s.size()))
+    {
+        alphabet_num[s[i] - 'a' + 1]++;
+    }
+
+    dp[0][0] = 1;
+    ll total_num = 0;
+    for (int i = 1; i <= 26; i++)
+    {
+        ll tmp_num = alphabet_num[i];
+        total_num += tmp_num;
+        for (int j = 0; j <= total_num; j++)
+        {
+            for (int k = 0; k <= min(int(tmp_num), j); k++)
+            {
+                dp[i][j] += dp[i - 1][j - k] * (fac[j] * finv[k] % MOD * finv[j - k] % MOD);
+                dp[i][j] %= MOD;
+            }
+        }
+    }
+
+    ll ans = 0;
+    for (int i = 1; i <= int(s.size()); i++)
+    {
+        ans += dp[26][i];
+        ans %= MOD;
+    }
+    cout << ans << endl;
+}
